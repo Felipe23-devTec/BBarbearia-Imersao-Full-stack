@@ -3,14 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Barbershop } from "@prisma/client";
 import { ChevronLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import SideMenu from "./side-menu";
 interface BarbershopInfoProps{
     barbershop: Barbershop
 }
 export default function BarbershopInfo({barbershop}: BarbershopInfoProps) {
     const router = useRouter();
     const handleBackClick = () =>{
-        router.back();
+        router.replace('/');
     }
   return (
     <div>
@@ -18,9 +20,17 @@ export default function BarbershopInfo({barbershop}: BarbershopInfoProps) {
             <Button size="icon" variant="outline" className="absolute z-50 top-4 left-4" onClick={handleBackClick}>
                 <ChevronLeftIcon/>
             </Button>
-            <Button size="icon" variant="outline" className="absolute z-50 top-4 right-4">
-                <MenuIcon/>
-            </Button>
+            <Sheet key="left">
+                <SheetTrigger asChild>
+                <Button size="icon" variant="outline" className="absolute z-50 top-4 right-4">
+                    <MenuIcon/>
+                </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[250px] md:w-[300px] p-0">
+                    <SideMenu/>
+                </SheetContent>
+            </Sheet>
+            
             <Image 
             src={barbershop?.imageUrl} 
             alt={barbershop?.name} 

@@ -1,8 +1,10 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import BarbershopInfo from "@/components/barbershop-info";
 import ServiceItem from "@/components/service-item";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/prisma"
 import { ChevronLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react";
+import { getServerSession } from "next-auth";
 import Image from "next/image";
 interface BarbershopDetailsPage{
     params: {
@@ -11,6 +13,7 @@ interface BarbershopDetailsPage{
 }
 
 export default async function BarbershopDetailsPage({params}: BarbershopDetailsPage) {
+    const session = await getServerSession(authOptions);
     const barbershop = await db.barbershop.findUnique({
         where:{
             id: params.id
@@ -29,7 +32,7 @@ export default async function BarbershopDetailsPage({params}: BarbershopDetailsP
         <BarbershopInfo barbershop={barbershop}/>
         <div className="flex flex-col md:flex-row md:flex-wrap">
             {barbershop.services.map((service) => (
-                <ServiceItem key={service.id} service={service}/>
+                <ServiceItem key={service.id} service={service} isAuthenticated={!!session?.user}/>
             ))}
         </div>
         
