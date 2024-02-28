@@ -4,19 +4,21 @@ import { Barbershop, Service } from "@prisma/client"
 import { Card, CardContent } from "./ui/card"
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Calendar } from "./ui/calendar";
 import { useMemo, useState } from "react";
 import { generateDayTimeList } from "@/app/helpers/hours";
-import { format } from "date-fns";
+import { format, setHours, setMinutes } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { saveBooking } from "@/app/actions/save-booking";
 interface ServiceItemProps{
     barbershop: Barbershop;
     service: Service;
     isAuthenticated: boolean;
 }
 export default function ServiceItem({service, barbershop,isAuthenticated}: ServiceItemProps) {
+  const{data} = useSession();
   const[date,setDate] = useState<Date | undefined>(new Date());
   const[hour,setHour] = useState<string | undefined>();
   const handleBookingclick = () =>{
@@ -34,6 +36,24 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
   const timeList = useMemo(() =>{
     return date ? generateDayTimeList(date) : [];
   }, [date])
+
+  const handleBookingSubimit = async ()=>{
+    try {
+      if(!hour || !date || !data?.user){
+        return;
+      }
+      const newDate = setMinutes(setHours(date, Number(hour.split(':')[0])),Number(hour.split(':')[1]));
+      await saveBooking({
+        serviceId: service.id,
+        barbersshopId: barbershop.id,
+        date: newDate,
+        userId: (data.user as any).id,
+
+      });
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <Card className="my-2 md:w-1/4 md:m-4">
       <CardContent className="p-3">
@@ -125,7 +145,7 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
                           </div>
                           <SheetFooter className="w-full flex justify-end gap-2 px-5">
                             <Button>Voltar</Button>
-                            <Button disabled={!date || !hour} className="bg-purple-600 text-white hover:bg-slate-400">Confirmar Reserva</Button>
+                            <Button disabled={!date || !hour} className="bg-purple-600 text-white hover:bg-slate-400" onClick={handleBookingSubimit}>Confirmar Reserva</Button>
                           </SheetFooter>
                         
                       </SheetContent>
