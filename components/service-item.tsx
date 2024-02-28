@@ -12,15 +12,21 @@ import { generateDayTimeList } from "@/app/helpers/hours";
 import { format, setHours, setMinutes } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { saveBooking } from "@/app/actions/save-booking";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 interface ServiceItemProps{
     barbershop: Barbershop;
     service: Service;
     isAuthenticated: boolean;
 }
 export default function ServiceItem({service, barbershop,isAuthenticated}: ServiceItemProps) {
+  const route = useRouter();
   const{data} = useSession();
   const[date,setDate] = useState<Date | undefined>(new Date());
   const[hour,setHour] = useState<string | undefined>();
+  const[looding, setLooding] = useState(false);
+  const[sheetOpen, setSheetOpen] = useState(false);
   const handleBookingclick = () =>{
     if(!isAuthenticated){
       return signIn('google')
@@ -38,6 +44,7 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
   }, [date])
 
   const handleBookingSubimit = async ()=>{
+    setLooding(true);
     try {
       if(!hour || !date || !data?.user){
         return;
@@ -50,8 +57,22 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
         userId: (data.user as any).id,
 
       });
+      setSheetOpen(false);
+      setHour(undefined);
+      setDate(undefined);
+      toast("Reserva realizada com sucesso!", {
+        description: format(newDate, "'Para' dd 'de' MMMM 'ás' HH':'mm'.'",{
+          locale: ptBR,
+        }),
+        action: {
+          label: "Visualizar",
+          onClick: () => route.push('/bookings'),
+        }
+      });
     } catch (error) {
       console.log(error)
+    }finally{
+      setLooding(false)
     }
   }
   return (
@@ -76,7 +97,7 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
                         currency: "BRL"
                     }).format((Number(service.price)))}</p>
                     
-                    <Sheet key="left">
+                    <Sheet key="left" open={sheetOpen} onOpenChange={setSheetOpen}>
                       <SheetTrigger asChild>
                         <Button variant="secondary" onClick={handleBookingclick}>Reservar</Button>
                       </SheetTrigger>
@@ -116,9 +137,13 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
                             </div>
                           )}
 
-                          <div className="py-2 mt-2">
+                          <div className="py-2 mt-4">
                             <Card>
                               <CardContent className="p-3">
+                                <div className="flex justify-between">
+                                  <h2 className="font-bold">Barbearia </h2>
+                                  <h2 className="font-bold">{barbershop.name}</h2>
+                                </div>
                                 <div className="flex justify-between">
                                   <h2 className="font-bold text-sm">{service.name}</h2>
                                   <h3 className="font-bold text-sm">{Intl.NumberFormat("pt-BR",{
@@ -143,9 +168,15 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
                               </CardContent>
                             </Card>
                           </div>
-                          <SheetFooter className="w-full flex justify-end gap-2 px-5">
+                          <SheetFooter className="w-full flex justify-end mt-4 gap-3 px-5">
                             <Button>Voltar</Button>
-                            <Button disabled={!date || !hour} className="bg-purple-600 text-white hover:bg-slate-400" onClick={handleBookingSubimit}>Confirmar Reserva</Button>
+                            <Button disabled={(!date || !hour) || looding} 
+                            className="bg-purple-600 text-white hover:bg-slate-400" 
+                            onClick={handleBookingSubimit}>
+                              {looding &&(
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>
+                              )}
+                              Confirmar Reserva</Button>
                           </SheetFooter>
                         
                       </SheetContent>
