@@ -53,7 +53,7 @@ export default function SideMenu() {
                 <HomeIcon size={18} className="mr-2"/>
                 Início</a>
                 {data?.user &&(
-                  <a href="/agendamentos" className="flex pl-5 items-center text-black bg-white py-2 rounded-md hover:bg-slate-400">
+                  <a href="/bookings" className="flex pl-5 items-center text-black bg-white py-2 rounded-md hover:bg-slate-400">
                   <CalendarIcon size={18} className="mr-2"/>
                   Agendamentos</a>
                 )}

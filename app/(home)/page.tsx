@@ -6,14 +6,17 @@ import Search from "@/components/search";
 import { db } from "@/lib/prisma";
 import {format} from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 export default async function Home() {
+  const session = await getServerSession(authOptions)
   const barbershops = await db.barbershop.findMany({})
   return (
     <div className="">
       <Header/>
       <div className="pt-6 px-5">
-        <h2 className="text-xl font-bold">Olá, João</h2>
+        <h2 className="text-xl font-bold">{session?.user ? ("Olá, "+session.user.name) : ("Vamos realizar uma reserva!")}</h2>
         <p className="capitalize text-sm">{format(new Date(), "EEEE',' d 'de' MMMM",{
             locale: ptBR
         })}</p>
@@ -22,7 +25,7 @@ export default async function Home() {
         <Search texto="Busque por uma barbearia..."/>
         <div className="mt-6">
           <h2 className="text-xs uppercase mb-3 text-gray-400 font-bold">Agendamentos</h2>
-          <BookingItem/>
+          {/* <BookingItem/> */}
         </div>
         <div className="mt-6">
           <h2 className="text-xs uppercase mb-3 text-gray-400 font-bold">Recomendados</h2>
