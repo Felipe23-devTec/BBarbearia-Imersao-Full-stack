@@ -27,10 +27,11 @@ export function generateDayTimeList(date: Date): string[] {
       const [hour, minutes] = time.split(':');
       const timeHour = parseInt(hour, 10);
       const timeMinutes = parseInt(minutes, 10);
+      const timeDifference = (timeHour - currentHour) * 60 + (timeMinutes - currentMinutes);
       // Comparação com o horário atual
-      if (timeHour > currentHour) {
+      if (timeHour > currentHour && timeDifference >= 45) {
         return true;
-      } else if (timeHour === currentHour && timeMinutes > currentMinutes) {
+      } else if (timeHour === currentHour && timeMinutes > currentMinutes && timeDifference >= 45) {
         return true;
       }
       return false;

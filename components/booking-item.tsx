@@ -3,7 +3,7 @@ import { Booking, Prisma } from "@prisma/client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
-import { format } from "date-fns";
+import { format, isFuture, isPast } from "date-fns";
 import { ptBR } from "date-fns/locale";
 interface BookingItemProps{
   booking: Prisma.BookingGetPayload<{
@@ -14,10 +14,11 @@ interface BookingItemProps{
 
 export default function BookingItem({booking}: BookingItemProps) {
   return (
-    <Card className="md:w-1/4">
+    <Card className="md:w-1/4 bg-gray-900">
       <CardContent className="p-5 flex justify-between py-0">
         <div className="flex flex-col gap-3 py-5">
-          <Badge className="bg-[#45309f] text-primary hover:text-black w-fit">Confirmado</Badge>
+          <Badge className={`text-primary hover:text-black w-fit ${isFuture(booking.date) ? 'bg-[#45309f] text-white' : 'bg-gray-500'}`}>{isPast(booking.date) ?("Finalizado") : ("Confirmado")}</Badge>
+    
           <h2 className="font-bold">{booking.service.name}</h2>
           <div className="flex items-center gap-2">
             <Avatar>
@@ -30,7 +31,7 @@ export default function BookingItem({booking}: BookingItemProps) {
         <div className="flex flex-col justify-center items-center px-3 border-l border-solid border-secondary">
             <p className="text-sm capitalize">{format(booking.date, "MMMM",{locale: ptBR})}</p>
             <p className="text-2xl">{format(booking.date, "dd",{locale: ptBR})}</p>
-            <p className="text-sm">{format(booking.date, "hh:mm",{locale: ptBR})}</p>
+            <p className="text-sm">{format(booking.date, "HH:mm")}</p>
         </div>
       </CardContent>
     </Card>
