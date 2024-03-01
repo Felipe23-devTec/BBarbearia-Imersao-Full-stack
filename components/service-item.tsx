@@ -1,13 +1,13 @@
 "use client";
 
-import { Barbershop, Service } from "@prisma/client"
+import { Barbershop, Booking, Service } from "@prisma/client"
 import { Card, CardContent } from "./ui/card"
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { signIn, useSession } from "next-auth/react";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Calendar } from "./ui/calendar";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { generateDayTimeList } from "@/app/helpers/hours";
 import { format, setHours, setMinutes } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -15,6 +15,7 @@ import { saveBooking } from "@/app/actions/save-booking";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { getDayBookings } from "@/app/actions/get-bookings";
 interface ServiceItemProps{
     barbershop: Barbershop;
     service: Service;
@@ -27,6 +28,18 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
   const[hour,setHour] = useState<string | undefined>();
   const[looding, setLooding] = useState(false);
   const[sheetOpen, setSheetOpen] = useState(false);
+  const[dayBooking,setDayBookings] = useState<Booking[]>([])
+
+  useEffect(() =>{
+    if(!date){
+      return
+    }
+    const refreshAvailableHours = async() =>{
+      const dayBooking = await getDayBookings(barbershop.id,date);
+      setDayBookings(dayBooking);
+    }
+    refreshAvailableHours();
+  },[date, barbershop.id])
   const handleBookingclick = () =>{
     if(!isAuthenticated){
       return signIn('google')
@@ -40,8 +53,27 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
     setHour(time);
   }
   const timeList = useMemo(() =>{
-    return date ? generateDayTimeList(date) : [];
-  }, [date])
+    if(!date){
+      return []
+    }
+    const currentTime = new Date();
+    return generateDayTimeList(date).filter(time =>{
+      const timeHour = Number(time.split(":")[0]);
+      const timeMinu = Number(time.split(":")[1]);
+
+      const booking = dayBooking.find(booking =>{
+        const bookingHour = booking.date.getHours();
+        const bookingMinutes = booking.date.getMinutes();
+        return bookingHour === timeHour && bookingMinutes === timeMinu;
+      })
+
+      if(!booking){
+        return true
+      }
+      return false;
+
+    })
+  }, [date,dayBooking])
 
   const handleBookingSubimit = async ()=>{
     setLooding(true);
@@ -131,9 +163,10 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
                           </div>
                           {date && (
                             <div className="flex gap-3 overflow-x-auto py-3 px-5 border-t border-solid border-secondary">
-                              {timeList.map((time) => (
+                              {timeList.length > 0 ?
+                              timeList.map((time) => (
                                 <Button key={time} className={`rounded-full hover:text-white hover:bg-slate-500 ${hour === time ? 'bg-purple-600 text-white' : ''}`} onClick={() => hendleHourClick(time)}>{time}</Button>
-                              ))}
+                              )): (<p className="text-sm">Todos os horários desse dia já foram  agendados! Selecione outro dia</p>)}
                             </div>
                           )}
 
