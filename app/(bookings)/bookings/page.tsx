@@ -38,7 +38,7 @@ export default async function BookingsPage() {
   return (
     <>
       <Header/>
-      <div className="px-5 py-6">
+      <div className="px-5 py-6 flex flex-col">
         <h1 className="text-xl font-bold">Agendamentos</h1>
         <h2 className="mb-3">Confirmados</h2>
         <div className="flex flex-col gap-4 md:flex-row flex-wrap">
