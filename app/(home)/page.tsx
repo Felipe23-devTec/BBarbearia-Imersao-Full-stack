@@ -9,7 +9,6 @@ import { ptBR } from "date-fns/locale";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import BookingHome from "@/components/bookingHome";
-
 export default async function Home() {
   const session = await getServerSession(authOptions)
   const barbershops = await db.barbershop.findMany({})
@@ -38,7 +37,7 @@ export default async function Home() {
             locale: ptBR
         })}</p>
       </div>
-      <div className="px-5 mt-6">
+      <div className="px-5 mt-6 scrol">
         <Search texto="Busque por uma barbearia..."/>
         <div className="mt-6">
           <h2 className="text-xs uppercase mb-3 text-gray-400 font-bold">Agendamentos</h2>

@@ -29,7 +29,7 @@ export default function BookingHome({booking}: BookingItemProps) {
             <h3 className="text-sm">{booking.barbershop.name}</h3>
             
           </div>
-          <Button className="w-full h-8 bg-red-600 text-white hover:bg-gray-500">Cancelar reserva</Button>
+          <Button className="w-full h-8 bg-red-600 text-white hover:bg-gray-500 rounded-md">Cancelar reserva</Button>
         </div>
         <div className="flex flex-col justify-center items-center px-3 border-l border-solid border-secondary">
             <p className="text-sm capitalize">{format(booking.date, "MMMM",{locale: ptBR})}</p>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import "./scrollbar.css"
 import Footer from "@/components/footer";
 import AuthProvider from "./providers/auth";
 import { Toaster } from "@/components/ui/sonner";

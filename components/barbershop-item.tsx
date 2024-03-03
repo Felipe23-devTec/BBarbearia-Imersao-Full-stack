@@ -16,7 +16,7 @@ export default function BarbershopItem({barbershop} : BarbershopItemProps) {
     router.push(`/barbershops/${barbershop.id}`);
   }
   return (
-    <Card className="min-w-[180px] max-w-[180px] h-[280px] rounded-2xl">
+    <Card className="min-w-[180px] max-w-[180px] h-[280px] rounded-2xl  bg-gray-900">
         <CardContent className="p-2">
             <div className="w-full h-[150px] relative">
               <div className="absolute top-2 left-2 z-50">

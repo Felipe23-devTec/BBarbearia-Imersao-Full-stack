@@ -1,0 +1,23 @@
+
+
+@media (min-width: 768px) {
+    /* Firefox */
+    .scrol {
+        scrollbar-width: 6px;
+        scrollbar-color: rgba(79, 78, 78, 0.9) rgba(0, 0, 0, 0);
+    }
+
+    /* Chrome, Edge, and Safari */
+    .scrol::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrol::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0);
+    }
+
+    .scrol::-webkit-scrollbar-thumb {
+        background-color: rgba(79, 78, 78, 0.9);
+        border-radius: 10x;
+    }
+}
