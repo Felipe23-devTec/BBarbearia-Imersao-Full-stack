@@ -133,7 +133,7 @@ export default function ServiceItem({service, barbershop,isAuthenticated}: Servi
                       <SheetTrigger asChild>
                         <Button variant="secondary" onClick={handleBookingclick}>Reservar</Button>
                       </SheetTrigger>
-                      <SheetContent side="left" className="w-[300px] p-0 scrol">
+                      <SheetContent side="left" className="w-[300px] p-0">
                         <SheetHeader className="text-left px-5 py-3 border-b border-solid border-white">
                           <SheetTitle>Fazer Reserva</SheetTitle>
                         </SheetHeader>
