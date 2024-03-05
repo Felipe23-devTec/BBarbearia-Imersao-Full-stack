@@ -41,13 +41,15 @@ export default async function BookingsPage() {
       <div className="px-5 py-6 flex flex-col">
         <h1 className="text-xl font-bold">Agendamentos</h1>
         <h2 className="mb-3">Confirmados</h2>
+        <h2 className="mb-3">{confirmadosBookings.length > 0 ? ("") : ("Nenhuma reserva confirmada! Reserve um horario") }</h2>
         <div className="flex flex-col gap-4 md:flex-row flex-wrap">
           {confirmadosBookings.map(booking => (
                 <BookingItem key={booking.id} booking={booking}/>
               ))}
         </div>
         <h2 className="my-3">Finalizados</h2>
-        <div className="flex flex-col gap-4 md:flex-row flex-wrap">
+        <h2 className="mb-3">{finalizadosBookings.length > 0 ? ("") : ("Nenhuma reserva finalizada! Reserve um horario") }</h2>
+        <div className="flex flex-col gap-4 md:flex-row flex-wrap mb-6">
           {finalizadosBookings.map(booking => (
                 <BookingItem key={booking.id} booking={booking}/>
               ))}

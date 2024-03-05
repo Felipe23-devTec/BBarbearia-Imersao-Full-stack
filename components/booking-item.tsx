@@ -12,6 +12,7 @@ import { cancelBooking } from "@/app/actions/cancel-booking";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
 interface BookingItemProps{
   booking: Prisma.BookingGetPayload<{
     include: {service: true; barbershop: true;}
@@ -121,9 +122,29 @@ export default function BookingItem({booking}: BookingItemProps) {
             <SheetClose asChild>
                 <Button className="w-full" variant="secondary">Voltar</Button>
             </SheetClose>
-            <Button disabled={!isFuture(booking.date) || isDeleteLoading} className="w-full mb-5" variant="destructive" onClick={(e) => handleClickCancel(booking.id, e)}>
-              {isDeleteLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>}
+            
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                <Button disabled={!isFuture(booking.date)} className="w-full mb-5" variant="destructive">
+              
               Cancelar Reserva</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Você tem certeza que deseja cancelar esta reserva?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction className="bg-red-700 text-white hover:bg-gray-600" disabled={isDeleteLoading} onClick={(e) => handleClickCancel(booking.id, e)}>
+                    {isDeleteLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin"></Loader2>}
+                      Confirmar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
           </SheetFooter>
             </div>
      </SheetContent>
