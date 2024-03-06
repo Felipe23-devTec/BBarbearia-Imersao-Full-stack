@@ -1,7 +1,8 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 import BarbershopInfo from "@/components/barbershop-info";
 import ServiceItem from "@/components/service-item";
 import { Button } from "@/components/ui/button";
+import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/prisma"
 import { ChevronLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react";
 import { getServerSession } from "next-auth";

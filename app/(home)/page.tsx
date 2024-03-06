@@ -7,8 +7,8 @@ import { db } from "@/lib/prisma";
 import {compareAsc, format, isFuture, subMonths} from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import BookingHome from "@/components/bookingHome";
+import { authOptions } from "@/lib/auth";
 export default async function Home() {
   const session = await getServerSession(authOptions)
   const barbershops = await db.barbershop.findMany({})

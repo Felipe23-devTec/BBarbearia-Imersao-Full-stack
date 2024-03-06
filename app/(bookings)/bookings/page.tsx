@@ -1,12 +1,13 @@
 
 import Header from "@/components/header";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../api/auth/[...nextauth]/route";
+
 import { signIn } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/prisma";
 import BookingItem from "@/components/booking-item";
 import { compareAsc, compareDesc, endOfMonth, isFuture, isPast, isThisMonth, isWithinInterval, startOfMonth, subMonths } from "date-fns";
+import { authOptions } from "@/lib/auth";
 
 
 export default async function BookingsPage() {
